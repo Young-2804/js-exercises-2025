@@ -64,27 +64,47 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script type="text/javascript">
 
-        var requestUrl = "TODO"
+        var requestUrl = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic"
 
         d3.json(requestUrl).then(function(data){
-            console.log("DATA:", data)
+    console.log("DATA:", data)
 
+    console.log("---------------------")
+    console.log("PART 1...")
 
-            console.log("---------------------")
-            console.log("PART 1...")
+    var drinks = data.drinks
+    console.log("Number of drinks:", drinks.length)
 
+    drinks.forEach(drink => {
+        console.log(`${drink.strDrink} (ID: ${drink.idDrink})`)
+    })
 
+    console.log("---------------------")
+    console.log("PART 2...")
 
+    document.getElementById("display-drinks-count").textContent = drinks.length
 
+    var displayDiv = document.getElementById("display-drinks")
+    drinks.forEach(drink => {
+        var childDiv = document.createElement("div")
 
-            console.log("---------------------")
-            console.log("PART 2...")
+        var nameTag = document.createElement("p")
+        nameTag.textContent = drink.strDrink
 
+        var imgTag = document.createElement("img")
+        imgTag.src = drink.strDrinkThumb
+        imgTag.style.height = "100px"
 
+        childDiv.appendChild(nameTag)
+        childDiv.appendChild(imgTag)
+        displayDiv.appendChild(childDiv)
+    })
 
-
-        })
+}).catch(function(error){
+    console.error("ERROR:", error)
+})
 
     </script>
+    
 </body>
 </html>

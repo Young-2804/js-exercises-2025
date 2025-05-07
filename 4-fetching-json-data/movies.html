@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harry Potter Movies (JSON)</title>
+    <style>
+        #image-container img {
+          border-radius: 8px;
+          margin-top: 10px;
+          max-height: 200px;
+        }
+      </style>
+
 </head>
 <body>
 
@@ -86,21 +94,62 @@
                 console.log("---------------------")
                 console.log("PART 1...")
 
+                console.log("Number of movies:", data.length);
 
+data.forEach(movie => {
+    console.log(`${movie["Title"]} (${movie["Year"]})`);
+});
 
+const topMovie = data.reduce((max, movie) => {
+  return parseFloat(movie["Rating"]) > parseFloat(max["Rating"]) ? movie : max;
+});
+console.log(`Top Rated Movie: ${topMovie["Title"]} (${topMovie["Rating"]}/10)`);
 
 
 
                 console.log("---------------------")
                 console.log("PART 2...")
 
+                const selectElement = document.getElementById("select-movie");
+data.forEach(movie => {
+  const option = document.createElement("option");
+  option.value = movie["Id"];
+  option.textContent = movie["Title"];
+  selectElement.appendChild(option);
+});
 
+function updateMovieInfo() {
+  const selectedId = selectElement.value;
+  if (selectedId === "N/A") {
+  document.getElementById("display-title").textContent = "Please select a movie";
+  document.getElementById("display-year").textContent = "-";
+  document.getElementById("display-rating").textContent = "-";
+  document.getElementById("image-container").innerHTML = "";
+  return;
+}
 
+const selectedMovie = data.find(movie => movie["Id"] === selectedId);
 
+document.getElementById("display-title").textContent = selectedMovie["Title"];
+document.getElementById("display-year").textContent = selectedMovie["Year"];
+document.getElementById("display-rating").textContent = selectedMovie["Rating"];
 
-            })
-            .catch(err => console.log(err))
+const imageContainer = document.getElementById("image-container");
+imageContainer.innerHTML = "";
+
+const img = document.createElement("img");
+img.src = selectedMovie["Thumbnail Image URL"];
+img.alt = selectedMovie["Title"];
+img.style.height = "200px";
+
+imageContainer.appendChild(img);
+}
+
+selectElement.addEventListener("change", updateMovieInfo);
+})
+.catch(err => console.log(err));
 
     </script>
+
 </body>
 </html>

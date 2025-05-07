@@ -40,11 +40,73 @@
 
     <hr>
     <h2>Part 3</h2>
-    <p>Create your own HTML interface that will allow the user to run their own simulation as described in Part 2.
-        The interface should allow the user to input values for the initial balance, desired ending balance, mean, and standard deviation.
-        The interface should include a button, that when clicked should perform the simulation and
-        and display the resulting number of years and actual ending balance on the page.
-    </p>
+    
+    <style>
+        .sim-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+        }
+        .sim-box label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+        .sim-box input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+            box-sizing: border-box;
+        }
+        #run-simulation {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        #run-simulation:hover {
+            background-color: #005fa3;
+        }
+        #result-output {
+            margin-top: 20px;
+            background-color: #eef6ff;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            white-space: pre-wrap;
+        }
+    </style>
+    
+    <div class="sim-box">
+        <h3>Run Your Own Simulation</h3>
+    
+        <label for="input-initial">Initial Balance:</label>
+        <input id="input-initial" type="number" value="150000">
+    
+        <label for="input-target">Target Balance:</label>
+        <input id="input-target" type="number" value="1000000">
+    
+        <label for="input-mean">Mean Return (%):</label>
+        <input id="input-mean" type="number" value="8">
+    
+        <label for="input-stddev">Std. Deviation (%):</label>
+        <input id="input-stddev" type="number" value="15">
+    
+        <button id="run-simulation">Run Simulation</button>
+    
+        <div id="result-output">Result will appear here...</div>
+    </div>
 
 
 
@@ -58,7 +120,19 @@
         console.log("---------------------")
         console.log("PART 1...")
 
+        let balance1 = 150000;
+    const target = 1000000;
+    const rate = 0.08;
+    let years1 = 0;
 
+    while (balance1 < target) {
+        balance1 *= (1 + rate);
+        years1++;
+    }
+
+    console.log("Original Balance:", formatUSD(150000));
+    console.log("Years Needed:", years1);
+    console.log("Final Balance:", formatUSD(balance1));
 
 
 
@@ -66,6 +140,22 @@
         console.log("---------------------")
         console.log("PART 2...")
 
+        let balance2 = 150000;
+    let years2 = 0;
+    const randomNormal = d3.randomNormal.source(d3.randomLcg(42))(0.08, 0.15);  // seed 42 for reproducibility
+    let returns = [];
+
+    while (balance2 < target) {
+        const annualReturn = randomNormal();
+        returns.push(annualReturn);
+        balance2 *= (1 + annualReturn);
+        years2++;
+    }
+
+    console.log("Original Balance:", formatUSD(150000));
+    console.log("Years Needed:", years2);
+    console.log("Final Balance:", formatUSD(balance2));
+    console.log("Annual Returns:", returns.map(r => (r * 100).toFixed(2) + "%").join(", "));
 
 
 
@@ -74,9 +164,35 @@
         console.log("---------------------")
         console.log("PART 3...")
 
+        document.getElementById("run-simulation").addEventListener("click", function () {
+    const initial = parseFloat(document.getElementById("input-initial").value);
+    const target = parseFloat(document.getElementById("input-target").value);
+    const mean = parseFloat(document.getElementById("input-mean").value) / 100;
+    const stddev = parseFloat(document.getElementById("input-stddev").value) / 100;
 
+    let balance = initial;
+    let years = 0;
+    const randomNormalUser = d3.randomNormal(mean, stddev);
+    const userReturns = [];
+
+    while (balance < target) {
+        const r = randomNormalUser();
+        balance *= (1 + r);
+        years++;
+        userReturns.push((r * 100).toFixed(2) + "%");
+    }
+
+    const resultHTML = `
+        <strong>Simulation Result</strong><br>
+        Years Needed: ${years}<br>
+        Final Balance: ${formatUSD(balance)}<br>
+        Annual Returns: ${userReturns.join(", ")}
+    `;
+    document.getElementById("result-output").innerHTML = resultHTML;
+});
 
 
     </script>
+
 </body>
 </html>

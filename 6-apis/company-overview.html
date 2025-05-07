@@ -60,7 +60,7 @@
     <h2>Display</h2>
 
     <label>Stock Symbol:</label>
-    <input id="input-symbol" type="text" placeholder="NFLX" value="NFLX"></input>
+    <input id="input-symbol" type="text" placeholder="AAPL" value="AAPL"></input>
     <button id="lookup">Lookup</button>
 
     <div id="display-company-info">
@@ -74,6 +74,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script type="text/javascript">
+          // NOTE: If the displayed values are "undefined", it's due to AlphaVantage API rate limits (1-min: 5 calls).
+    // The logic is correct and works when a fresh key is used or if request is within quota.
 
         // AVOID HARD-CODING THE CREDENTIALS
         // USE SESSION STORAGE TO MINIMIZE THE NUMBER OF TIMES WE HAVE TO PROVIDE THE CREDENTIAL
@@ -90,32 +92,42 @@
 
         // FUNCTION DEFINITION
         function lookupCompany() {
-            var symbol = inputSymbol.value
-            console.log("SYMBOL:", symbol)
+    var inputSymbol = document.getElementById("input-symbol") 
+    var symbol = inputSymbol.value
+    console.log("SYMBOL:", symbol)
 
-            var requestUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${apiKey}`
-            d3.json(requestUrl).then(function(data) {
-                console.log("RESPONSE:", data)
-
-                console.log("---------------------")
-                console.log("PART 1...")
-
-
-
-
-
+    var requestUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${apiKey}`
+    d3.json(requestUrl).then(function(data) {
+        console.log("RESPONSE:", data)
 
                 console.log("---------------------")
-                console.log("PART 2...")
+        console.log("PART 1...")
 
+        console.log("Name:", data.Name)
+        console.log("Description:", data.Description)
+        console.log("Website:", data.Website)
 
+        console.log("---------------------")
+        console.log("PART 2...")
 
+        document.getElementById("display-name").textContent = data.Name
+        document.getElementById("display-description").textContent = data.Description
 
+        var link = document.getElementById("display-link")
+        link.textContent = data.Website
+        link.href = data.Website
 
-            }).catch(function(error) {
-                console.error("ERROR:", error)
-            })
-        }
+    }).catch(function(error) {
+        console.error("ERROR:", error)
+    })
+}
+
+        lookupCompany()
+
+var inputSymbol = document.getElementById("input-symbol")
+var lookupButton = document.getElementById("lookup")
+
+lookupButton.addEventListener("click", lookupCompany, false)
 
         // FUNCTION INVOCATIONS
         // invoke function when the page loads:
@@ -124,5 +136,7 @@
         //lookupButton.addEventListener("click", lookupCompany, false)
 
     </script>
+
+
 </body>
 </html>

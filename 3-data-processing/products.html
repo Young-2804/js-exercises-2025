@@ -4,6 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Products</title>
+
+    <style>
+        #display-products div {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 400px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        #display-products img {
+            display: block;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -62,7 +85,17 @@
         console.log("---------------------")
         console.log("PART 1...")
 
+        console.log("A. Total number of products:", products.length);
 
+console.log("B. Product name and price:");
+products.forEach(p => {
+    console.log(`${p.name}: $${p.price.toFixed(2)}`);
+});
+
+const matchingProducts = products.filter(p => p.price < 50);
+console.log("C. Matching products under $50:", matchingProducts);
+
+console.log("D. Number of matching products:", matchingProducts.length);
 
 
 
@@ -70,9 +103,38 @@
         console.log("---------------------")
         console.log("PART 2...")
 
+        const container = document.getElementById("display-products");
 
+products.forEach(product => {
+    const productDiv = document.createElement("div");
 
+    const nameP = document.createElement("p");
+    nameP.textContent = `Name: ${product.name}`;
+
+    const descP = document.createElement("p");
+    descP.textContent = `Description: ${product.description}`;
+
+    const priceP = document.createElement("p");
+    priceP.textContent = `Price: $${product.price.toFixed(2)}`;
+
+    const img = document.createElement("img");
+    img.src = product.imageURL;
+    img.alt = product.name;
+    img.style.width = "360px";  // optional
+    img.style.height = "200px"; // optional
+
+    const hr = document.createElement("hr");
+
+    productDiv.appendChild(nameP);
+    productDiv.appendChild(descP);
+    productDiv.appendChild(priceP);
+    productDiv.appendChild(img);
+    productDiv.appendChild(hr);
+
+    container.appendChild(productDiv);
+});
 
     </script>
+
 </body>
 </html>
